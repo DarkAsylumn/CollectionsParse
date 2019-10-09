@@ -1,0 +1,16 @@
+function onOpen() {
+  var ui = SpreadsheetApp.getUi();
+  ui.createMenu('Extract Emails')
+      .addItem('Extract Emails...', 'extractEmails')
+      .addToUi();
+}
+function parseEmails() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var threads = GmailApp.search("label:orders-declined", 0, 500);
+  for (var i=0; i<threads.length; i++) {
+    var messages = threads[i].getMessages();
+    var email = messages[0].getFrom();
+    sheet.appendRow([threads[i].getLastMessageDate(), email, threads[i].getFirstMessageSubject()])
+    threads[i].markRead();
+  }
+}
